@@ -2,7 +2,7 @@
 const net = require('net');
 const timers = require('timers');
 const DiscordRPC = require('discord-rpc');
-const mpvIPC = require('../mpv-ipc/client');
+const mpvIPC = require('mpv-ipc');
 const VLC = require('vlc-remote');
 const mpcIPC = require('mpc-ipc');
 
