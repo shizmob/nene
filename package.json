@@ -1,0 +1,21 @@
+{
+  "name": "nene",
+  "version": "0.1.0",
+  "description": "Connect media player information to Discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shizmob/nene"
+  },
+  "author": "Shiz <hi@shiz.me>",
+  "license": "0BSD",
+  "dependencies": {
+    "discord-rpc": "^3.0.0-beta.9",
+    "mpc-ipc": "^0.1.0",
+    "mpv-ipc": "^0.1.3",
+    "vlc-remote": "^4.0.2"
+  }
+}
