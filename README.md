@@ -1,9 +1,8 @@
-<p align="center">
-  <h1>nene</h1>
-  <img src="assets/nene.png" />
+# nene
 
-  <em>Ne, ne... watcha playin'?</em>
-</p>
+<p align="center"><img src="assets/nene.png" alt="" /></p>
+
+<p align="center"><em>Ne, ne... watcha playin'?</em></p>
 
 ## Nani?
 
