@@ -34,6 +34,10 @@
   },
   "config": {
     "forge": {
+      "github_repository": {
+        "owner": "Shizmob",
+        "name": "nene"
+      },
       "make_targets": {
         "win32": [
           "squirrel"
@@ -47,17 +51,15 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "yarn"
+        "packageManager": "yarn",
+        "icon": "app/assets/icon.png",
+        "asar": true
       },
       "electronWinstallerConfig": {
         "name": "nene"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
-      "github_repository": {
-        "owner": "",
-        "name": ""
-      },
       "windowsStoreConfig": {
         "packageName": "",
         "name": "nene"
