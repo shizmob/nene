@@ -10,6 +10,10 @@ if (require('electron-squirrel-startup')) {
 	app.quit();
 }
 
+function inDevMode() {
+	return process.mainModule.filename.indexOf('app.asar') === -1;
+}
+
 
 /* Initialize persistent store. */
 const store = new Store();
@@ -47,7 +51,9 @@ function createApplicationMenu() {
 		{label: 'Window', role: 'windowMenu'},
 		{label: 'Help', role: 'help', submenu: [
 			{label: app.getName() + ' Support', click: () => shell.openExternal('https://shizmob.github.io/nene')}
-		]}
+		].concat(inDevMode() ? [
+			{label: 'Open Developer Console', click: () => windows.main.instance.webContents.openDevTools()}
+		] : [])}
 	]));
 }
 
@@ -81,13 +87,11 @@ const windows = {
 function showWindow(name) {
 	const window = windows[name];
 	if (window.instance) {
-		if (!window.instance.isVisible()) {
-			window.instance.show();
-		}
+		window.instance.show();
 	} else {
 		window.instance = window.create();
 		window.instance.on('closed', () => {
-			windows.instance = null;
+			window.instance = null;
 		});
 	}
 }
@@ -112,13 +116,13 @@ function createTrayMenu(title, ep, source) {
 
 	return Menu.buildFromTemplate([].concat([
 		{label: `nene v${version}`, enabled: false},
-		{label: 'Show...', click: () => { showWindow('main'); }},
 		{label: 'About nene', role: 'about'},
 		{label: 'Check for Updates...'},
 		{type: 'separator'},
 	], titleMenu, [
 		{type: 'separator'},
-		{label: 'Preferences...'},
+		{label: 'Show...', click: () => { showWindow('main'); }},
+		{label: 'Preferences...', click: () => { showWindow('preferences'); }},
 		{type: 'separator'},
 		{label: 'Pause Updating'},
 		{label: 'Quit', role: 'quit'}
