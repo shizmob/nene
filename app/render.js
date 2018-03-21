@@ -19,7 +19,7 @@ const clearWatching = (source, error, wasMain) => {
 };
 
 const setActive = source => {
-        $(`#active-${source}`).text('active');
+        $(`#active-${source}`).text('[active]');
 };
 
 const clearActive = source => {
@@ -32,6 +32,10 @@ $(() => {
         nene.on('stopped', clearWatching);
         nene.on('player-active', setActive);
         nene.on('player-inactive', clearActive);
+        nene.on('sink-active', setActive);
+        nene.on('sink-inactive', clearActive);
+        nene.getActive('player').map(setActive);
+        nene.getActive('sink').map(setActive);
 });
 
 $(window).on('beforeunload', () => {
@@ -39,4 +43,6 @@ $(window).on('beforeunload', () => {
         nene.removeListener('stopped', clearWatching);
         nene.removeListener('player-active', setActive);
         nene.removeListener('player-inactive', clearActive);
+        nene.removeListener('sink-active', setActive);
+        nene.removeListener('sink-inactive', clearActive);
 });
