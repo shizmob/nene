@@ -9,14 +9,18 @@ const { Nene, registerAllPlayers, registerAllSinks } = require('./lib');
 const app = electron.app;
 const store = new Store();
 
+if (require('electron-squirrel-startup')) {
+	app.quit();
+}
+
 
 /* Initialize Nene. */
 const nene = new Nene(store.get('clients'));
+global.nene = nene;
 nene.on('ready', (config) => {
         registerAllPlayers(nene, config);
         registerAllSinks(nene, config);
 });
-global.nene = nene;
 nene.start();
 
 
@@ -24,7 +28,10 @@ nene.start();
 let mainWindow = null;
 
 function create() {
-	mainWindow = new electron.BrowserWindow({ width: 800, height: 600, show: false });
+	mainWindow = new electron.BrowserWindow({
+		show: false,
+		resizable: false,
+	});
 	mainWindow.loadURL(url.format({
 		pathname: path.join(__dirname, 'index.html'),
 		protocol: 'file:',
