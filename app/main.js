@@ -1,9 +1,26 @@
+'use strict';
 const path = require('path');
 const url = require('url');
 const electron = require('electron');
+const Store = require('electron-store');
+
+const { Nene, registerAllPlayers, registerAllSinks } = require('./lib');
 
 const app = electron.app;
+const store = new Store();
 
+
+/* Initialize Nene. */
+const nene = new Nene(store.get('clients'));
+nene.on('ready', (config) => {
+        registerAllPlayers(nene, config);
+        registerAllSinks(nene, config);
+});
+global.nene = nene;
+nene.start();
+
+
+/* Initialize main window. */
 let mainWindow = null;
 
 function create() {
@@ -19,9 +36,10 @@ function create() {
 	mainWindow.on('closed', () => {
 		mainWindow = null;
 	});
-	mainWindow.webContents.openDevTools();
 }
 
+
+/* Initialize app! */
 app.on('ready', () => create());
 
 app.on('window-all-closed', () => {
@@ -32,6 +50,6 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
 	if (mainWindow === null) {
-		create()
+		create();
 	}
 });
