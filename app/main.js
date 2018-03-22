@@ -63,6 +63,7 @@ function createMainWindow() {
 	const window = new BrowserWindow({
 		show: false,
 		resizable: false,
+		autoHideMenuBar: true,
 		icon: path.join(__dirname, 'assets', 'icon.png'),
 	});
 	window.loadURL(url.format({
