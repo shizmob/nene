@@ -71,7 +71,9 @@ function createMainWindow() {
 		slashes: true,
 	}));
 	window.once('ready-to-show', () => {
-		app.dock.show();
+		if (app.dock) {
+			app.dock.show();
+		}
 		window.show();
 	});
 	return window;
@@ -134,7 +136,7 @@ function createTray() {
 	tray = new Tray(path.join(__dirname, 'assets', 'trayTemplate.png'));
 	tray.setToolTip(`nene v${version}`);
 	tray.setContextMenu(contextMenu);
-	
+
 	nene.on('started', (source, title, ep) => {
 		contextMenu = createTrayMenu(title, ep, source);
 		tray.setContextMenu(contextMenu);
@@ -166,7 +168,9 @@ app.on('ready', () => {
 });;
 
 app.on('window-all-closed', () => {
-	app.dock.hide();
+	if (app.dock) {
+		app.dock.hide();
+	}
 });
 
 app.on('activate', () => {
