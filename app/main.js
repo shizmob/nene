@@ -103,7 +103,7 @@ let tray = null
 function createTrayMenu(title, ep, source) {
 	const titleMenu = [{
 		label: title ? 'Now playing:' : 'Nothing playing',
-		enabled: title !== undefined,
+		enabled: !!title,
 		click: () => { showWindow('main'); }
 	}];
 	if (title) {
@@ -124,24 +124,34 @@ function createTrayMenu(title, ep, source) {
 		{label: 'Show...', click: () => { showWindow('main'); }},
 		{label: 'Preferences...', click: () => { showWindow('preferences'); }},
 		{type: 'separator'},
-		{label: 'Pause Updating'},
+		{label: 'Pause Updating', type: 'checkbox', click: () => { if (nene.isPaused()) { nene.start(); } else { nene.pause(); }}},
 		{label: 'Quit', role: 'quit'}
 	]));
 }
 
 function createTray() {
+	let contextMenu = createTrayMenu();
 	tray = new Tray(path.join(__dirname, 'assets', 'trayTemplate.png'));
-	const contextMenu = 
 	tray.setToolTip(`nene v${version}`);
-	tray.setContextMenu(createTrayMenu());
+	tray.setContextMenu(contextMenu);
 	
 	nene.on('started', (source, title, ep) => {
-		tray.setContextMenu(createTrayMenu(title, ep, source));
+		contextMenu = createTrayMenu(title, ep, source);
+		tray.setContextMenu(contextMenu);
 	})
-	nene.on('stopped', (source, wasMain, error) => {
+	nene.on('stopped', (source, error, wasMain) => {
 		if (wasMain) {
-			tray.setContextMenu(createTrayMenu());
+			contextMenu = createTrayMenu();
+			tray.setContextMenu(contextMenu);
 		}
+	});
+	nene.on('ready', config => {
+		contextMenu.items[contextMenu.items.length - 2].checked = false;
+		tray.setContextMenu(contextMenu);
+	});
+	nene.on('paused', () => {
+		contextMenu.items[contextMenu.items.length - 2].checked = true;
+		tray.setContextMenu(contextMenu);
 	});
 }
 
