@@ -25,6 +25,8 @@
     "mpc-ipc": "^0.1.0",
     "mpv-ipc": "^0.1.3",
     "nan": "^2.10.0",
+    "open-files": "^0.1.0",
+    "ps-list": "^4.0.0",
     "vlc-remote": "^4.0.2"
   },
   "devDependencies": {
