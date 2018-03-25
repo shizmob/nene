@@ -12,6 +12,7 @@ and broadcast your questionable taste to the entire world over Discord! It curre
 * [mpv](https://mpv.io) / [IINA](https://lhc70000.github.io/iina/)
 * [VLC](https://www.videolan.org/vlc/index.html)
 * [MPC-HC](https://mpc-hc.org/)
+* Any other player that can be inspected by checking its open files!
 
 ## How does it look?
 
@@ -55,6 +56,20 @@ and enable "Listen on port" and "Allow access from localhost only".
 Then enter "13579" as the port number, and after restarting you're ready to tell everyone about your obscure cartoons!
 
 ![configuring MPC-HC](assets/config-mpc.png)
+
+### Others
+
+nene can also check arbitrary players by keeping tabs on their open files!
+Right now, this requires some manual setup in `lib/players/open-files.js`, adding a section to `defaultConfig` that looks a bit like the following:
+
+```js
+        programs: {
+                short_identifier: {
+                        name: 'Proper player name',
+                        binary: '/path/to/player/binary.exe'
+                }
+        }
+```
 
 ## License
 
