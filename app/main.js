@@ -50,11 +50,69 @@ function createApplicationMenu() {
 		{label: 'Edit', role: 'editMenu'},
 		{label: 'Window', role: 'windowMenu'},
 		{label: 'Help', role: 'help', submenu: [
-			{label: app.getName() + ' Support', click: () => shell.openExternal('https://shizmob.github.io/nene')}
-		].concat(inDevMode() ? [
-			{label: 'Open Developer Console', click: () => windows.main.instance.webContents.openDevTools()}
-		] : [])}
+			{label: app.getName() + ' Support', click: () => shell.openExternal('https://shizmob.github.io/nene')},
+			...(inDevMode() ? [{label: 'Open Developer Console', click: () => windows.main.instance.webContents.openDevTools()}] : [])
+		]}
 	]));
+}
+
+
+/* Initialize tray. */
+let tray = null;
+
+function createTrayMenu(title, ep, source) {
+	return Menu.buildFromTemplate([
+		{label: `nene v${version}`, enabled: false},
+		{label: 'About nene', role: 'about'},
+		{label: 'Check for Updates...'},
+		{type: 'separator'},
+		...(title ? [
+			{label: 'Now playing:', click: () => showWindow('main')},
+			{label: `  ${title}`, enabled: false},
+			...(ep ? [{label: `  Episode ${ep}`, enabled: false}] : []),
+			{label: `  Playing through ${source}`, enabled: false},
+			{type: 'separator'},
+			{label: 'Clear Status', click: () => nene.clearStatus(source, true)},
+			{label: 'Disable Player', click: () => {}}
+		] : [
+			{label: 'Nothing playing', enabled: false}
+		]),
+		{type: 'separator'},
+		{label: 'Status...', click: () => showWindow('main')},
+		{label: 'Preferences...', click: () => showWindow('preferences')},
+		{type: 'separator'},
+		{label: 'Pause Updating', type: 'checkbox', click: () => nene.togglePause()},
+		{label: 'Quit', role: 'quit'}
+	]);
+}
+
+function createTray() {
+	let contextMenu;
+	tray = new Tray(path.join(__dirname, 'assets', 'trayTemplate.png'));
+
+	const setTrayStatus = (source, title, ep) => {
+		contextMenu = createTrayMenu(title, ep, source);
+		tray.setContextMenu(contextMenu);
+		tray.setToolTip(`nene v${version} - playing ${title}` + (ep ? `, episode ${ep}` : ''));
+	};
+	const clearTrayStatus = () => {
+		contextMenu = createTrayMenu();
+		tray.setContextMenu(contextMenu);
+		tray.setToolTip(`nene v${version}`);
+	};
+
+	nene.on('started', setTrayStatus);
+	nene.on('stopped', (source, error, wasMain) => { if (wasMain) clearTrayStatus(); });
+	nene.on('ready', config => {
+		contextMenu.items[contextMenu.items.length - 2].checked = false;
+		tray.setContextMenu(contextMenu);
+	});
+	nene.on('paused', () => {
+		contextMenu.items[contextMenu.items.length - 2].checked = true;
+		tray.setContextMenu(contextMenu);
+	});
+
+	clearTrayStatus();
 }
 
 
@@ -97,65 +155,6 @@ function showWindow(name) {
 			window.instance = null;
 		});
 	}
-}
-
-
-/* Initialize tray. */
-let tray = null
-
-function createTrayMenu(title, ep, source) {
-	const titleMenu = [{
-		label: title ? 'Now playing:' : 'Nothing playing',
-		enabled: !!title,
-		click: () => { showWindow('main'); }
-	}];
-	if (title) {
-		titleMenu.push({label: `  ${title}`, enabled: false})
-		if (ep) {
-			titleMenu.push({label: `  Episode ${ep}`, enabled: false});
-		}
-		titleMenu.push({label: `  Playing through ${source}`, enabled: false});
-	}
-
-	return Menu.buildFromTemplate([].concat([
-		{label: `nene v${version}`, enabled: false},
-		{label: 'About nene', role: 'about'},
-		{label: 'Check for Updates...'},
-		{type: 'separator'},
-	], titleMenu, [
-		{type: 'separator'},
-		{label: 'Show...', click: () => { showWindow('main'); }},
-		{label: 'Preferences...', click: () => { showWindow('preferences'); }},
-		{type: 'separator'},
-		{label: 'Pause Updating', type: 'checkbox', click: () => { if (nene.isPaused()) { nene.start(); } else { nene.pause(); }}},
-		{label: 'Quit', role: 'quit'}
-	]));
-}
-
-function createTray() {
-	let contextMenu = createTrayMenu();
-	tray = new Tray(path.join(__dirname, 'assets', 'trayTemplate.png'));
-	tray.setToolTip(`nene v${version}`);
-	tray.setContextMenu(contextMenu);
-
-	nene.on('started', (source, title, ep) => {
-		contextMenu = createTrayMenu(title, ep, source);
-		tray.setContextMenu(contextMenu);
-	})
-	nene.on('stopped', (source, error, wasMain) => {
-		if (wasMain) {
-			contextMenu = createTrayMenu();
-			tray.setContextMenu(contextMenu);
-		}
-	});
-	nene.on('ready', config => {
-		contextMenu.items[contextMenu.items.length - 2].checked = false;
-		tray.setContextMenu(contextMenu);
-	});
-	nene.on('paused', () => {
-		contextMenu.items[contextMenu.items.length - 2].checked = true;
-		tray.setContextMenu(contextMenu);
-	});
 }
 
 
