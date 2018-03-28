@@ -71,6 +71,16 @@ Right now, this requires some manual setup in `lib/players/open-files.js`, addin
         }
 ```
 
+## Development
+
+When release are available from the [releases](https://github.com/Shizmob/nene/releases), you will be able to download binaries there.
+To launch nene in development mode, do the following after cloning the repository:
+
+- Switch to the appropriate branch;
+- Install the dependencies: `yarn install`;
+- Run the application: `yarn start`;
+- Optionally, create binaries yourself: `yarn package`.
+
 ## License
 
 nene is a strong independent girl, and appropriately but nevertheless licensed under the [0BSD](https://spdx.org/licenses/0BSD.html) license:
