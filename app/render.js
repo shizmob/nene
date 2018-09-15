@@ -3,8 +3,8 @@ const $ = require('jquery');
 const nene = require('electron').remote.getGlobal('nene');
 
 
-const setWatching = (source, title, ep) => {
-        const text = title + (ep ? (' - Episode ' + ep) : '');
+const setWatching = (source, current) => {
+        const text = current.title + (current.ep ? ` - ${current.ep}` : '');
         $('title').text(`nene - [${text}]`);
         $('#watching').text(text);
         $(`#watching-${source}`).text(text);

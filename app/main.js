@@ -60,16 +60,16 @@ function createApplicationMenu() {
 /* Initialize tray. */
 let tray = null;
 
-function createTrayMenu(title, ep, source) {
+function createTrayMenu(source, current) {
 	return Menu.buildFromTemplate([
 		{label: `nene v${version}`, enabled: false},
 		{label: 'About nene', role: 'about'},
 		{label: 'Check for Updates...'},
 		{type: 'separator'},
-		...(title ? [
+		...(current ? [
 			{label: 'Now playing:', click: () => showWindow('main')},
-			{label: `  ${title}`, enabled: false},
-			...(ep ? [{label: `  Episode ${ep}`, enabled: false}] : []),
+			{label: `  ${current.title}`, enabled: false},
+			...(current.ep ? [{label: (current.type !== 'music' ? 'Episode ' : '') + current.ep, enabled: false}] : []),
 			{label: `  Playing through ${source}`, enabled: false},
 			{type: 'separator'},
 			{label: 'Clear Status', click: () => nene.clearStatus(source, true)},
@@ -90,10 +90,10 @@ function createTray() {
 	let contextMenu;
 	tray = new Tray(path.join(__dirname, 'assets', 'trayTemplate.png'));
 
-	const setTrayStatus = (source, title, ep) => {
-		contextMenu = createTrayMenu(title, ep, source);
+	const setTrayStatus = (source, current) => {
+		contextMenu = createTrayMenu(source, current);
 		tray.setContextMenu(contextMenu);
-		tray.setToolTip(`nene v${version} - playing ${title}` + (ep ? `, episode ${ep}` : ''));
+		tray.setToolTip(`nene v${version} - playing ${current.title}` + (current.ep ? ` - ${current.ep}` : ''));
 	};
 	const clearTrayStatus = () => {
 		contextMenu = createTrayMenu();
