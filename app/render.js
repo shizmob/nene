@@ -18,31 +18,36 @@ const clearWatching = (source, error, wasMain) => {
         $(`#watching-${source}`).text('');
 };
 
-const setActive = source => {
-        $(`#active-${source}`).text('[active]');
+const setActive = (source, type) => {
+        $(`#${type}s`).append(`<li id="${type}-${source}">${source}: <span id="watching-${source}" /></li>`);
 };
 
-const clearActive = source => {
-        $(`#active-${source}`).text('');
+const clearActive = (source, type) => {
+        $(`#${type}-${source}`).remove();
 };
+
+const setPlayerActive = (source) => setActive(source, 'player');
+const clearPlayerActive = (source) => clearActive(source, 'player');
+const setSinkActive = (source) => setActive(source, 'sink');
+const clearSinkActive = (source) => clearActive(source, 'sink');
 
 
 $(() => {
         nene.on('started', setWatching);
         nene.on('stopped', clearWatching);
-        nene.on('player-active', setActive);
-        nene.on('player-inactive', clearActive);
-        nene.on('sink-active', setActive);
-        nene.on('sink-inactive', clearActive);
-        nene.getActive('player').map(setActive);
-        nene.getActive('sink').map(setActive);
+        nene.on('player-active', setPlayerActive);
+        nene.on('player-inactive', clearPlayerActive);
+        nene.on('sink-active', setSinkActive);
+        nene.on('sink-inactive', clearSinkActive);
+        nene.getActive('player').map(setPlayerActive);
+        nene.getActive('sink').map(setSinkActive);
 });
 
 $(window).on('beforeunload', () => {
         nene.removeListener('started', setWatching);
         nene.removeListener('stopped', clearWatching);
-        nene.removeListener('player-active', setActive);
-        nene.removeListener('player-inactive', clearActive);
-        nene.removeListener('sink-active', setActive);
-        nene.removeListener('sink-inactive', clearActive);
+        nene.removeListener('player-active', setPlayerActive);
+        nene.removeListener('player-inactive', clearPlayerActive);
+        nene.removeListener('sink-active', setSinkActive);
+        nene.removeListener('sink-inactive', clearSinkActive);
 });
