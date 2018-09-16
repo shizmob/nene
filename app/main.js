@@ -51,7 +51,9 @@ function createApplicationMenu() {
 		{label: 'Window', role: 'windowMenu'},
 		{label: 'Help', role: 'help', submenu: [
 			{label: app.getName() + ' Support', click: () => shell.openExternal('https://shizmob.github.io/nene')},
-			...(inDevMode() ? [{label: 'Open Developer Console', click: () => windows.main.instance.webContents.openDevTools()}] : [])
+			...(inDevMode() ? [
+				{label: 'Open Developer Console', click: () => windows.main.instance.webContents.openDevTools()}
+			] : [])
 		]}
 	]));
 }
@@ -69,7 +71,7 @@ function createTrayMenu(source, current) {
 		...(current ? [
 			{label: 'Now playing:', click: () => showWindow('main')},
 			{label: `  ${current.title}`, enabled: false},
-			...(current.ep ? [{label: (current.type !== 'music' ? 'Episode ' : '') + current.ep, enabled: false}] : []),
+			...(current.ep ? [{label: (current.type !== 'music' ? '  Episode ' : '  ') + current.ep, enabled: false}] : []),
 			{label: `  Playing through ${source}`, enabled: false},
 			{type: 'separator'},
 			{label: 'Clear Status', click: () => nene.clearStatus(source, true)},
