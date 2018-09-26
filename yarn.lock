@@ -3249,9 +3249,9 @@ klaw@^2.1.0:
   dependencies:
     graceful-fs "^4.1.9"
 
-lastfm@^0.9.2:
+lastfm@dancoates/lastfm-node#lastplay-error-fix:
   version "0.9.2"
-  resolved "https://registry.yarnpkg.com/lastfm/-/lastfm-0.9.2.tgz#d00ca2e3b30eb484e510792875525900e4d77d88"
+  resolved "https://codeload.github.com/dancoates/lastfm-node/tar.gz/34dbdd83f55f8b340103c4ccf0d08e948e94dc25"
   dependencies:
     underscore "~1.6.0"
 
